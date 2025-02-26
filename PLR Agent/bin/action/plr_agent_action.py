@@ -1,6 +1,5 @@
 __author__ = 'fernando'
 
-import datetime
 import sys
 
 from flask import Blueprint, request, jsonify
@@ -14,11 +13,12 @@ from plr_agent_manager import PLRAgentManager
 
 from io import BytesIO
 
+
 plr_agent_action = Blueprint('plr_agent_action', __name__)
-CORS(plr_agent_action, resources={r"/eliza/*": {"origins": "*"}}, allow_headers='Content-Type')
+CORS(plr_agent_action, resources={r"/*": {"origins": "*"}}, allow_headers='Content-Type')
 
 
-@plr_agent_action.route('/eliza/plr-agent/api/<string:api_version>/query', methods=['POST'])
+@plr_agent_action.route('/api/<string:api_version>/query', methods=['POST'])
 @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
 def query_agent(api_version):
     """
@@ -26,7 +26,6 @@ def query_agent(api_version):
     :param api_version: api version to use
     :return: response
     """
-    start_time = datetime.datetime.now()
     try:
         query_agent_payload = QueryAgentPayload(request.json)
         query_agent_payload.display_contents()
@@ -38,12 +37,11 @@ def query_agent(api_version):
             response = __create_api_response(status_code, response_dict)
             print(f'PLRAgentAction.query_agent: response - {response_dict}')
     except Exception as e:
-        LoggingUtil.display_text(f'PLRAgentAction.query_agent: Exception - {e}')
+        print(f'PLRAgentAction.query_agent: Exception - {e}')
         response = __create_500_error_response(str(e))
     finally:
-        end_time = datetime.datetime.now()
-        LoggingUtil.display_elapsed_time(start_time, end_time, 'PLRAgentAction.query_agent')
         return response
+    
 
 def __create_500_error_response(error_message):
     payload = {'success': False, 'response': error_message}
@@ -73,4 +71,3 @@ def __get_status_code(response_dict):
     :return: status code
     """
     return 200 if response_dict['success'] else 404
-    

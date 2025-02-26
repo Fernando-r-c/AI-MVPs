@@ -5,23 +5,16 @@ import sys
 
 from googleapiclient.discovery import build
 
-sys.path.insert(0, "bin/common/")
-from ini_config_reader import read_ini_config_section, DEFAULT_CONFIG_FILE
-
-sys.path.insert(0, 'bin/common/utils/')
-from logging_util import LoggingUtil
-
-class YoutubeController:
+class YoutubeController(object):
     """
     Class to interact with Youtube API
     """
 
     def __init__(self):
         """
-        Constructor
+        Constructor for the Youtube Controller class.
         """
         self.api_key = os.getenv('YOUTUBE_API_KEY')
-        LoggingUtil.display_text(f'Youtube API Key: {self.api_key}')
         self.youtube = build('youtube', 'v3', developerKey=self.api_key)
 
     def search_educational_videos(self, query, max_results=5):

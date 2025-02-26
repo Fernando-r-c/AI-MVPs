@@ -1,14 +1,7 @@
 __author__ = 'fernando'
 
-import json
-import os
 import sys
-import datetime
-
 from io import BytesIO
-
-sys.path.insert(0, 'bin/common/utils/')
-from logging_util import LoggingUtil
 
 sys.path.insert(0, 'bin/controllers/')
 from openai_controller import OpenAIController
@@ -38,8 +31,7 @@ class PLRAgentManager(object):
         Initialize the PLR Agent Manager object.
         :param api_version: api version to use
         """
-        start_time = datetime.datetime.now()
-        LoggingUtil.display_text(f'PLRAgentManager __init__')
+        print(f'PLRAgentManager __init__')
         if api_version is None or api_version.lower() not in VALID_API_VERSION_SET:
             raise ValueError(f'API Version is invalid; use one of these: {", ".join(VALID_API_VERSION_SET)}')
         self.api_version = api_version.lower()
@@ -47,9 +39,6 @@ class PLRAgentManager(object):
         # Shared resources
         self.openai_controller_obj = self.__get_openai_controller()
         self.youtube_controller_obj = self.__get_youtube_controller()
-
-        end_time = datetime.datetime.now()
-        LoggingUtil.display_elapsed_time(start_time, end_time, 'PLRAgentManager __init__')
     
     def __get_openai_controller(self):
         """
@@ -77,8 +66,7 @@ class PLRAgentManager(object):
         :param query_agent_payload: QueryAgentPayload object
         :return: response from the agent
         """
-        LoggingUtil.display_text(f'PLRAgentManager query_plr_agent')
-        start_time = datetime.datetime.now()
+        print(f'PLRAgentManager query_plr_agent')
         success = False
         response = 'Failed to query Agent'
         video_results = []
@@ -90,13 +78,11 @@ class PLRAgentManager(object):
                     video_results = self.openai_controller_obj.extract_keywords(query, self.youtube_controller_obj)
                     response = 'Educational videos found'
                     success = True
-                return {self.RESPONSE_KEY: response, self.SUCCESS_KEY: success, self.RECOMMENDATIONS_KEY: video_results}
             except Exception as e:
-                LoggingUtil.display_text(f'Error in PLRAgentManager query_plr_agent: {str(e)}')
+                print(f'Error in PLRAgentManager query_plr_agent: {str(e)}')
                 raise e
             finally:
-                end_time = datetime.datetime.now()
-                LoggingUtil.display_elapsed_time(start_time, end_time, 'PLRAgentManager query_plr_agent')
+                return {self.RESPONSE_KEY: response, self.SUCCESS_KEY: success, self.RECOMMENDATIONS_KEY: video_results}
         raise ValueError(self.get_not_implemented_api_msg('query_plr_agent'))
     
     def get_not_implemented_api_msg(self, method_name):

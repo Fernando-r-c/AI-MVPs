@@ -2,14 +2,7 @@ __author__ = 'fernando'
 
 import sys
 
-sys.path.insert(0, 'bin/apps/common/')
-from base_payload import BasePayload
-
-sys.path.insert(0, 'bin/common/utils/')
-from logging_util import LoggingUtil
-
-
-class QueryAgentPayload(BasePayload):
+class QueryAgentPayload():
 
     QUERY_KEY = 'query'
 
@@ -30,12 +23,28 @@ class QueryAgentPayload(BasePayload):
         message = 'JSON request body is empty'
         if self.valid_payload:
             message = ''
-            message += self.validate_param(self.query, self.QUERY_KEY)
+            message += self.__validate_param(self.query, self.QUERY_KEY)
         return message
+    
+    def __validate_param(self, param, param_name):
+        """
+        Validate the parameter value for the given parameter name.
+        :param param: parameter
+        :param param_name: parameter name
+        :return: error message (empty if no error)
+        """
+        message = ''
+        if param is None:
+            message += f'`{param_name}` is missing. '
+        elif isinstance(param, str) and param.strip() == '':
+            message += f'`{param_name}` is empty. '
+        return message
+    
+
 
 
     def display_contents(self):
-        LoggingUtil.display_text(f'\n Query Agent Payload')
-        LoggingUtil.display_text('- - - - - - - - -')
+        print(f'\n Query Agent Payload')
+        print('- - - - - - - - -')
         super(QueryAgentPayload, self).display_contents()
-        LoggingUtil.display_text(f'query: {self.query}')
+        print(f'query: {self.query}')

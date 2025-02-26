@@ -8,13 +8,10 @@ from flask import Flask, jsonify
 sys.path.insert(0, "bin/action/plr_agent/")                        # PLR Agent API
 from plr_agent_action import plr_agent_action
 
-
 app = Flask(__name__)
 app.register_blueprint(plr_agent_action)
 
-
 ERROR_STATUS = 'error'
-
 
 @app.errorhandler(400)
 def bad_request_error(e):

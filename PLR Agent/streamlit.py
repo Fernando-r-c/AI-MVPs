@@ -1,7 +1,6 @@
 __author__ = 'fernando'
 
 import logging
-import sys
 
 from flask import Flask, jsonify
 import streamlit as st
